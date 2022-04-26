@@ -1,0 +1,21 @@
+QListWidget{
+	border-style:outset;
+	border-width:3px;
+
+	color:rgb(85, 255, 127);
+	border-radius: 14px;
+	font: "Arial";
+        font-size: 18px;
+	border: 2px solid #00b894;
+	background-color: #000000;
+}
+
+QPushButton{
+	border-radius: 6px;
+	font: 9pt "Arial";
+	font-size: 20px;
+	border: 2px solid rgb(85, 0, 255);
+	background-color: #000000;
+	color: #00FF00;
+}
+

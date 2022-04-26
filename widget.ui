@@ -47,15 +47,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">border-style:outset;
-	border-width:3px;
-
-	color:rgb(85, 255, 127);
-	border-radius: 14px;
-	font: &quot;Arial&quot;;
-	font-size: 18px;
-	border: 2px solid #00b894;
-	background-color: #000000;</string>
+    <string notr="true"/>
    </property>
    <item>
     <property name="text">

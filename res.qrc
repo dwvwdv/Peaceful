@@ -1,5 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file>one.mp3</file>
+        <file>DarkGreen.qss</file>
+        <file>icon.ico</file>
     </qresource>
 </RCC>
