@@ -8,6 +8,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QDebug>
+#include <QDirIterator>
 
 namespace Ui {
 class Widget;
@@ -23,15 +24,20 @@ public:
 
     void slotControl();
     void slotControlChange();
-    void slotChangeSong(QString newSong);
-    void slotSoundSize();
+    void changeSong(QString newSong);
+    inline void slotSoundSize(int size);
+    void slotAutoAddSong();
+    void isExistFile();
+
 private:
     Ui::Widget *ui;
     QMediaPlayer *player;
+    QMediaPlaylist *playList;
 
     enum class ControlStatus{
         Play,
         Pause,
+        Repeat,
         Random,
         Previous,
         Next,
@@ -40,6 +46,8 @@ private:
     ControlStatus controlStatus;
     QMap<QString ,QString> AllSong;
     QMap<QString, QString>::iterator it;
+    QString NowSongPath;
+    bool isRepeat;
 };
 
 #endif // WIDGET_H
