@@ -6,7 +6,7 @@ Widget::Widget(QWidget *parent) :
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
-    this->setWindowIcon(QIcon(":/icon.ico"));       //Icon設定
+    this->setWindowIcon(QIcon(":/musicIco.ico"));       //Icon設定
     this->setAttribute(Qt::WA_TranslucentBackground);//背景透明化
     this->setWindowFlags(Qt::FramelessWindowHint);   //無邊窗口
 //    this->setFixedSize(300,270);                           //固定窗口大小
@@ -17,6 +17,7 @@ Widget::Widget(QWidget *parent) :
     playList->setPlaybackMode(QMediaPlaylist::Loop);
 
     //debug btn
+    ui->listBtn->hide();
     connect(ui->listBtn,QPushButton::clicked,this,[=]{
         qDebug() << playList->mediaCount();
     });
@@ -25,15 +26,15 @@ Widget::Widget(QWidget *parent) :
     connect(ui->ControlList,QListWidget::doubleClicked,this,Widget::slotControlChange);
 
     //SongList
-//    connect(ui->SongList,QListWidget::doubleClicked,this,[&]{
-//        changeSong(AllSong[ui->SongList->currentItem()->text()]);
-//    });
+    connect(ui->SongList,QListWidget::doubleClicked,this,[&]{
+        changeSong();
+    });
 
     //Now song icon
     connect(player,QMediaPlayer::currentMediaChanged,ui->SongList,[&]{
         if(preSongIndex != -1)
             ui->SongList->item(preSongIndex)->setIcon(QIcon(""));
-        ui->SongList->item(playList->currentIndex())->setIcon(QIcon(":/icon.ico"));
+        ui->SongList->item(playList->currentIndex())->setIcon(QIcon(":/musicIco.ico"));
         preSongIndex = playList->currentIndex();
 
         qDebug() << playList->currentIndex();
@@ -60,10 +61,16 @@ void Widget::slotControlChange(){
         ui->ControlList->currentItem()->setText("Play");
     }
     else if(ui->ControlList->currentItem()->text() == "Repeat"){
-        controlStatus = ControlStatus::Repeat;
+        controlStatus = ControlStatus::Random;
+        ui->ControlList->currentItem()->setText("Random");
     }
     else if(ui->ControlList->currentItem()->text() == "Random"){
-        controlStatus = ControlStatus::Random;
+        controlStatus = ControlStatus::Normal;
+        ui->ControlList->currentItem()->setText("Normal");
+    }
+    else if(ui->ControlList->currentItem()->text() == "Normal"){
+        controlStatus = ControlStatus::Repeat;
+        ui->ControlList->currentItem()->setText("Repeat");
     }
     else if(ui->ControlList->currentItem()->text() == "Previous"){
         controlStatus = ControlStatus::Previous;
@@ -88,21 +95,20 @@ void Widget::slotControl(){
             player->pause();
             break;
         case ControlStatus::Repeat:
-            if(!isRepeat){
-                player->playlist()->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
-                ui->ControlList->currentItem()->setIcon(QIcon(":/icon.ico"));
-                isRepeat = true;
-            }
-            else{
-                player->playlist()->setPlaybackMode(QMediaPlaylist::Loop);
-                ui->ControlList->currentItem()->setIcon(QIcon(""));
-                isRepeat = false;
-            }
+            player->playlist()->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+            ui->ControlList->currentItem()->setIcon(QIcon(":/icon.ico"));
+            isRepeat = true;
+            break;
         case ControlStatus::Random:
             player->playlist()->setPlaybackMode(QMediaPlaylist::Random);
+            ui->ControlList->currentItem()->setIcon(QIcon(":/musicIco.ico"));
+            isRepeat = false;
+            break;
+        case ControlStatus::Normal:
+                player->playlist()->setPlaybackMode(QMediaPlaylist::Loop);
+                ui->ControlList->currentItem()->setIcon(QIcon(""));
             break;
         case ControlStatus::Previous:
-
             player->playlist()->previous();
             break;
         case ControlStatus::Next:
@@ -112,6 +118,8 @@ void Widget::slotControl(){
             break;
         case ControlStatus::AddSong:{
             QStringList files = QFileDialog::getOpenFileNames(this,"Select Music",QDir::homePath(),"file (*.mp3 *.wav)");{
+                if(files.isEmpty())
+                    return;
                 for(auto &file:files){
                     QFileInfo fi(file);
                     AllSong.insert(fi.fileName(),fi.filePath());
@@ -119,7 +127,6 @@ void Widget::slotControl(){
                         ui->SongList->addItem(fi.fileName());
                         playList->addMedia(QUrl(AllSong[fi.fileName()]));
                     }
-                    qDebug() << AllSong[fi.fileName()];
                 }
                 player->setPlaylist(playList);
             }
@@ -132,11 +139,23 @@ void Widget::slotControl(){
     }
 }
 
-void Widget::changeSong(QString newSong){
-    player->setMedia(QUrl(newSong));
-    NowSongPath = newSong;
+void Widget::changeSong(){
+//    player->setMedia(QUrl(newSong));
+//    NowSongPath = newSong;
+    //Solution Click Repeat ,after Double Click SongList Bug
+    if(isRepeat){
+        player->playlist()->setPlaybackMode(QMediaPlaylist::Loop);
+    }
+
+    while(player->playlist()->currentIndex() != ui->SongList->row(ui->SongList->currentItem())){
+        player->playlist()->next();
+    }
     player->play();
     ui->ControlList->item(0)->setText("Pause");
+
+    if(isRepeat){
+        player->playlist()->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+    }
 }
 
 inline void Widget::slotSoundSize(int size){
@@ -144,8 +163,8 @@ inline void Widget::slotSoundSize(int size){
 }
 
 void Widget::slotAutoAddSong(){
-//    QDirIterator it("D:/", {"*.mp3", "*.wav"} , QDir::Files ,QDirIterator::Subdirectories );
-    QDirIterator it("D:/", {"*.mp3", "*.wav"} , QDir::Files );
+    QDirIterator it("D:/", {"*.mp3", "*.wav"} , QDir::Files ,QDirIterator::Subdirectories );
+//    QDirIterator it("D:/", {"*.mp3", "*.wav"} , QDir::Files );
     while (it.hasNext()) {
         QString file = it.next();
         QFileInfo fi(file);

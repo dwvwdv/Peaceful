@@ -3,5 +3,6 @@
         <file>one.mp3</file>
         <file>DarkGreen.qss</file>
         <file>icon.ico</file>
+        <file>musicIco.ico</file>
     </qresource>
 </RCC>

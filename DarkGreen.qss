@@ -3,7 +3,7 @@ QListWidget{
         border-width:3px;
 
         color:rgb(85, 255, 127);
-        border-radius: 14px;
+        border-radius: 8px;
         font: "Arial";
         font-size: 18px;
         border: 2px solid #00b894;

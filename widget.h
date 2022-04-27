@@ -24,7 +24,7 @@ public:
 
     void slotControl();
     void slotControlChange();
-    void changeSong(QString newSong);
+    void changeSong();
     inline void slotSoundSize(int size);
     void slotAutoAddSong();
     void isExistFile();
@@ -39,6 +39,7 @@ private:
         Pause,
         Repeat,
         Random,
+        Normal,
         Previous,
         Next,
         AddSong
@@ -47,7 +48,8 @@ private:
     QMap<QString ,QString> AllSong;
     QMap<QString, QString>::iterator it;
     QString NowSongPath;
-    bool isRepeat;
+    bool isRepeat = false;
+    bool isRandom = false;
     int preSongIndex = -1;
 };
 
