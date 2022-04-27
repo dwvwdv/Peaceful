@@ -48,6 +48,7 @@ private:
     QMap<QString, QString>::iterator it;
     QString NowSongPath;
     bool isRepeat;
+    int preSongIndex = -1;
 };
 
 #endif // WIDGET_H

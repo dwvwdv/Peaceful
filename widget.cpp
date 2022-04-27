@@ -14,20 +14,34 @@ Widget::Widget(QWidget *parent) :
 
     player = new QMediaPlayer;
     playList = new QMediaPlaylist;
+    playList->setPlaybackMode(QMediaPlaylist::Loop);
 
-    playList->addMedia(QUrl("qrc:/one.mp3"));
-    player->setMedia(playList);
-
-
-    connect(ui->ControlList,QListWidget::doubleClicked,this,Widget::slotControlChange);
-
-    connect(ui->SongList,QListWidget::doubleClicked,this,[&]{
-        qDebug() << AllSong[ui->SongList->currentItem()->text()];
-        changeSong(AllSong[ui->SongList->currentItem()->text()]);
+    //debug btn
+    connect(ui->listBtn,QPushButton::clicked,this,[=]{
+        qDebug() << playList->mediaCount();
     });
 
+    //Control
+    connect(ui->ControlList,QListWidget::doubleClicked,this,Widget::slotControlChange);
+
+    //SongList
+//    connect(ui->SongList,QListWidget::doubleClicked,this,[&]{
+//        changeSong(AllSong[ui->SongList->currentItem()->text()]);
+//    });
+
+    //Now song icon
+    connect(player,QMediaPlayer::currentMediaChanged,ui->SongList,[&]{
+        if(preSongIndex != -1)
+            ui->SongList->item(preSongIndex)->setIcon(QIcon(""));
+        ui->SongList->item(playList->currentIndex())->setIcon(QIcon(":/icon.ico"));
+        preSongIndex = playList->currentIndex();
+
+        qDebug() << playList->currentIndex();
+    });
+    //Sound size
     connect(ui->SoundSize,QSlider::valueChanged,this,Widget::slotSoundSize);
 
+    //Scan Music
     connect(ui->Auto_Add,QPushButton::clicked,this,Widget::slotAutoAddSong);
 }
 
@@ -48,7 +62,9 @@ void Widget::slotControlChange(){
     else if(ui->ControlList->currentItem()->text() == "Repeat"){
         controlStatus = ControlStatus::Repeat;
     }
-
+    else if(ui->ControlList->currentItem()->text() == "Random"){
+        controlStatus = ControlStatus::Random;
+    }
     else if(ui->ControlList->currentItem()->text() == "Previous"){
         controlStatus = ControlStatus::Previous;
     }
@@ -73,46 +89,26 @@ void Widget::slotControl(){
             break;
         case ControlStatus::Repeat:
             if(!isRepeat){
-                playList->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
+                player->playlist()->setPlaybackMode(QMediaPlaylist::CurrentItemInLoop);
                 ui->ControlList->currentItem()->setIcon(QIcon(":/icon.ico"));
                 isRepeat = true;
             }
             else{
-                playList->setPlaybackMode(QMediaPlaylist::Sequential);
+                player->playlist()->setPlaybackMode(QMediaPlaylist::Loop);
                 ui->ControlList->currentItem()->setIcon(QIcon(""));
                 isRepeat = false;
             }
+        case ControlStatus::Random:
+            player->playlist()->setPlaybackMode(QMediaPlaylist::Random);
+            break;
         case ControlStatus::Previous:
-            for(it = AllSong.begin(); it != AllSong.end();++it){
 
-                if(it.value() == NowSongPath){
-                    qDebug() << it.key() << " " << it.value() << '\n';
-                    if(it == AllSong.begin()){
-                        it = AllSong.end()-1;
-                        changeSong(it.value());
-                    }
-                    else
-                        changeSong((--it).value());
-                    player->play();
-                    break;
-                }
-            }
+            player->playlist()->previous();
             break;
         case ControlStatus::Next:
-            for(it = AllSong.begin(); it != AllSong.end();++it){
-
-                if(it.value() == NowSongPath){
-                    qDebug() << it.key() << " " << it.value() << '\n';
-                    if(it + 1 == AllSong.end()){
-                        it = AllSong.begin();
-                        changeSong(it.value());
-                    }
-                    else
-                        changeSong((++it).value());
-                    player->playlist();
-                    break;
-                }
-            }
+            player->playlist()->next();
+            if(player->playlist() == nullptr)
+                player->setPlaylist(playList);
             break;
         case ControlStatus::AddSong:{
             QStringList files = QFileDialog::getOpenFileNames(this,"Select Music",QDir::homePath(),"file (*.mp3 *.wav)");{
@@ -125,7 +121,7 @@ void Widget::slotControl(){
                     }
                     qDebug() << AllSong[fi.fileName()];
                 }
-//                player->setPlaylist(playList);
+                player->setPlaylist(playList);
             }
 
             break;
@@ -154,7 +150,7 @@ void Widget::slotAutoAddSong(){
         QString file = it.next();
         QFileInfo fi(file);
         AllSong.insert(fi.fileName(),fi.filePath());
-        playList->addMedia(QUrl(AllSong[fi.fileName()]));
+        playList->addMedia(QUrl(fi.filePath()));
         qDebug() << fi.fileName() << fi.filePath();
         ui->SongList->addItem(fi.fileName());
 

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>353</width>
-    <height>276</height>
+    <width>468</width>
+    <height>377</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,8 +19,8 @@
   <widget class="QListWidget" name="SongList">
    <property name="geometry">
     <rect>
-     <x>130</x>
-     <y>10</y>
+     <x>140</x>
+     <y>80</y>
      <width>201</width>
      <height>241</height>
     </rect>
@@ -30,18 +30,18 @@
 	border-width:3px;
 
 	color:rgb(85, 255, 127);
-	border-radius: 14px;
+	border-radius: 22px;
 	font: &quot;Arial&quot;;
-	font-size: 14px;
+	font-size: 20px;
 	border: 2px solid #00b894;
 	background-color: #000000;</string>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>10</y>
+     <x>20</x>
+     <y>80</y>
      <width>111</width>
      <height>241</height>
     </rect>
@@ -100,12 +100,50 @@
     <item>
      <widget class="QPushButton" name="Auto_Add">
       <property name="text">
-       <string>自動掃歌</string>
+       <string>Scan</string>
       </property>
      </widget>
     </item>
    </layout>
   </widget>
+  <widget class="QListWidget" name="SongList_2">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>60</y>
+     <width>201</width>
+     <height>241</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">border-style:outset;
+	border-width:3px;
+
+	color:rgb(85, 255, 127);
+	border-radius: 22px;
+	font: &quot;Arial&quot;;
+	font-size: 20px;
+	border: 2px solid #00b894;
+	background-color: #000000;</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="listBtn">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>50</y>
+     <width>80</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>PlayList</string>
+   </property>
+  </widget>
+  <zorder>SongList_2</zorder>
+  <zorder>SongList</zorder>
+  <zorder>layoutWidget</zorder>
+  <zorder>listBtn</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
