@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QMediaPlayer>
 #include <QMediaPlaylist>
+#include <QFileDialog>
 
 namespace Ui {
 class Widget;
@@ -18,9 +19,20 @@ public:
     ~Widget();
 
     void slotControl();
+    void slotControlChange();
 private:
     Ui::Widget *ui;
     QMediaPlayer *player;
+
+    enum class ControlStatus{
+        Play,
+        Pause,
+        Random,
+        Previous,
+        Next,
+        AddSong
+    };
+    ControlStatus controlStatus;
 };
 
 #endif // WIDGET_H

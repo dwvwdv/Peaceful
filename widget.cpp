@@ -14,7 +14,7 @@ Widget::Widget(QWidget *parent) :
 
     player = new QMediaPlayer;
     player->setMedia(QUrl("qrc:/one.mp3"));
-    connect(ui->ControlList,QListWidget::doubleClicked,this,Widget::slotControl);
+    connect(ui->ControlList,QListWidget::doubleClicked,this,Widget::slotControlChange);
 }
 
 Widget::~Widget()
@@ -22,6 +22,42 @@ Widget::~Widget()
     delete ui;
 }
 
+void Widget::slotControlChange(){
+    if(ui->ControlList->currentItem()->text() == "Play"){
+        controlStatus = ControlStatus::Play;
+        ui->ControlList->currentItem()->setText("Pause");
+    }
+    else if(ui->ControlList->currentItem()->text() == "Pause"){
+        controlStatus = ControlStatus::Pause;
+        ui->ControlList->currentItem()->setText("Play");
+    }
+    else if(ui->ControlList->currentItem()->text() == "Add Song"){
+
+        controlStatus = ControlStatus::AddSong;
+
+    }
+    //update
+    slotControl();
+}
+
 void Widget::slotControl(){
-    player->play();
+    switch (controlStatus) {
+        case ControlStatus::Play:
+            player->play();
+            break;
+        case ControlStatus::Pause:
+            player->pause();
+            break;
+        case ControlStatus::Previous:
+            break;
+        case ControlStatus::Next:
+            break;
+        case ControlStatus::AddSong:
+            QString fileName = QFileDialog::getOpenFileName(this,"Select Music","./","file (*.mp3 *.wav)");
+            break;
+
+
+        default:
+            break;
+    }
 }
