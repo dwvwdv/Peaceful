@@ -9,6 +9,8 @@
 #include <QFileInfo>
 #include <QDebug>
 #include <QDirIterator>
+#include <QMouseEvent>
+
 
 namespace Ui {
 class Widget;
@@ -51,6 +53,14 @@ private:
     bool isRepeat = false;
     bool isRandom = false;
     int preSongIndex = -1;
+
+    QPoint      mouseStartPoint;
+    QPoint      windowTopLeftPoint;
+    bool m_bDrag = false;
+protected:
+    void mousePressEvent(QMouseEvent *e);
+    void mouseMoveEvent(QMouseEvent *e);
+    void mouseReleaseEvent(QMouseEvent *e);
 };
 
 #endif // WIDGET_H

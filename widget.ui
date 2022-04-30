@@ -119,10 +119,24 @@
     <string>PlayList</string>
    </property>
   </widget>
+  <widget class="QLabel" name="P">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>60</y>
+     <width>21</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>■</string>
+   </property>
+  </widget>
   <zorder>SongList_2</zorder>
   <zorder>SongList</zorder>
   <zorder>layoutWidget</zorder>
   <zorder>listBtn</zorder>
+  <zorder>P</zorder>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

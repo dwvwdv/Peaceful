@@ -176,3 +176,33 @@ void Widget::slotAutoAddSong(){
     }
     player->setPlaylist(playList);
 }
+
+void Widget::mousePressEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton)
+    {
+        m_bDrag = true;
+        mouseStartPoint = event->globalPos();
+        windowTopLeftPoint = this->frameGeometry().topLeft();
+    }
+}
+
+void Widget::mouseMoveEvent(QMouseEvent *event)
+{
+    if(m_bDrag)
+    {
+        QPoint distance = event->globalPos() - mouseStartPoint;
+        this->move(windowTopLeftPoint + distance);
+    }
+}
+
+void Widget::mouseReleaseEvent(QMouseEvent *event)
+{
+    if(event->button() == Qt::LeftButton)
+    {
+        m_bDrag = false;
+    }
+    else if(event->button() == Qt::RightButton){
+        QApplication::exit();
+    }
+}

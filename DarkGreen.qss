@@ -9,9 +9,16 @@ QListWidget{
         border: 2px solid #00b894;
         background-color: #000000;
 }
-
+QLabel{
+        color: rgb(255, 0, 0);
+        border-radius: 14px;
+        font: "Arial";
+        font-size: 10px;
+        border: 2px solid rgb(98, 98, 98);
+        background-color: #000000;
+}
 QSlider{
-    border-radius: 6px;
+        border-radius: 6px;
         font-size: 18px;
         border: 2px solid rgb(85, 0, 255);
         background-color: #222222;
