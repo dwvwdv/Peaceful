@@ -10,6 +10,7 @@
 #include <QDebug>
 #include <QDirIterator>
 #include <QMouseEvent>
+#include <QSystemTrayIcon>
 
 
 namespace Ui {
@@ -30,11 +31,14 @@ public:
     inline void slotSoundSize(int size);
     void slotAutoAddSong();
     void isExistFile();
+    void iconActivated(QSystemTrayIcon::ActivationReason reason);
+    bool eventFilter(QObject *obj, QEvent *event);
 
 private:
     Ui::Widget *ui;
     QMediaPlayer *player;
     QMediaPlaylist *playList;
+    QSystemTrayIcon *trayIcon;
 
     enum class ControlStatus{
         Play,

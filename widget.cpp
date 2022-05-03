@@ -11,6 +11,7 @@ Widget::Widget(QWidget *parent) :
     this->setWindowFlags(Qt::FramelessWindowHint);   //無邊窗口
 //    this->setFixedSize(300,270);                           //固定窗口大小
     this->setWindowTitle("Peaceful");	 //視窗名稱設定
+    qApp->installEventFilter(this);
 
     player = new QMediaPlayer;
     playList = new QMediaPlaylist;
@@ -44,6 +45,13 @@ Widget::Widget(QWidget *parent) :
 
     //Scan Music
     connect(ui->Auto_Add,QPushButton::clicked,this,Widget::slotAutoAddSong);
+
+     trayIcon = new QSystemTrayIcon(this);
+     trayIcon->setIcon(QIcon(":/musicIco.ico"));
+     trayIcon->show();
+     //右下角圖標事件連結
+     connect(trayIcon,&QSystemTrayIcon::activated,this,Widget::iconActivated);
+
 }
 
 Widget::~Widget()
@@ -205,4 +213,30 @@ void Widget::mouseReleaseEvent(QMouseEvent *event)
     else if(event->button() == Qt::RightButton){
         QApplication::exit();
     }
+}
+
+void Widget::iconActivated(QSystemTrayIcon::ActivationReason reason){
+    switch(reason){
+    case QSystemTrayIcon::DoubleClick :
+        this->setWindowState(Qt::WindowActive);
+        this->activateWindow();
+        this->show();
+        qDebug() << "get icon double click!" << endl;
+        break;
+    default:
+        break;
+    }
+}
+
+
+bool Widget::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+//           qDebug() << "key " << keyEvent->key() << "from" << obj;
+        if(keyEvent->key() == Qt::Key_Escape)
+            this->hide();
+    }
+    return QObject::eventFilter(obj, event);
 }
